@@ -20,7 +20,20 @@ class Producto(models.Model):
 
     def __str__(self):
        return f"{self.id} {self.marca} {self.nombre} {self.precio}"
+    
+class Carrito(models.Model):
+    session_key = models.CharField(max_length=50)
+    fec_creacion = models.DateField(auto_now_add=True)
 
+class ItemCarrito(models.Model):
+    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, related_name='items')
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveBigIntegerField(default=1)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['carrito', 'producto'], name='unique_productos_carrito')
+        ]
 
 
     

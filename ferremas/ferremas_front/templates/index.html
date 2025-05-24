@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ferremas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+        body { padding-top: 70px; }
+        .product-card { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">Ferremas</a>
+            <a href="/carrito/" class="btn btn-outline-light ms-auto">
+                🛒 Carrito
+            </a>
+        </div>
+    </nav>
+
+    <!-- Contenido -->
+    <div class="container mt-4">
+        <div class="row">
+            {% for producto in productos %}
+            <div class="col-md-4">
+                <div class="card product-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto.nombre }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ producto.marca }}</h6>
+                        <p class="card-text">
+                            Código: {{ producto.cod_ext }}<br>
+                            Precio: ${{ producto.precio }}<br>
+                            Stock: {{ producto.stock }}
+                        </p>
+                        <button class="btn btn-primary agregar-carrito" data-id="{{ producto.id }}">
+                            Agregar al carrito
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center">No hay productos disponibles.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const botones = document.querySelectorAll(".agregar-carrito");
+
+            botones.forEach(boton => {
+                boton.addEventListener("click", async () => {
+                    const idProducto = boton.getAttribute("data-id");
+
+                    try {
+                        const response = await fetch("/api/carrito/agregar/", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": getCookie("csrftoken")
+                            },
+                            body: JSON.stringify({
+                                id_producto: idProducto,
+                                cantidad: 1
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            alert("✅ Producto agregado al carrito");
+                        } else {
+                            alert("❌ Error: " + (data.message || "No se pudo agregar"));
+                        }
+                    } catch (err) {
+                        alert("❌ Error al conectar con el servidor.");
+                    }
+                });
+            });
+
+            // Función para obtener CSRF token (si tienes protección activada)
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== "") {
+                    const cookies = document.cookie.split(";");
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.startsWith(name + "=")) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+    </script>
+
+</body>
+</html>

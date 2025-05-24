@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrito - Ferremas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 70px; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Ferremas</a>
+        </div>
+    </nav>
+
+    <!-- Contenido -->
+    <div class="container mt-5">
+        <h2>🛒 Tu carrito</h2>
+        <div id="carrito-contenido" class="row mt-4">
+            <p>Cargando productos...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        const carritoContenedor = document.getElementById("carrito-contenido");
+
+        async function cargarCarrito() {
+            const response = await fetch("/api/carrito/ver/");
+            const data = await response.json();
+
+            carritoContenedor.innerHTML = ""; // Limpiar
+
+            if (!data.items || data.items.length === 0) {
+                carritoContenedor.innerHTML = "<p class='text-muted'>Tu carrito está vacío.</p>";
+                return;
+            }
+
+            data.items.forEach(item => {
+                console.log(item);
+                const total = item.producto.precio * item.cantidad;
+                const card = document.createElement("div");
+                card.className = "col-md-6 mb-4";
+                card.innerHTML = `
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${item.producto.nombre}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">${item.producto.marca}</h6>
+                            <p class="card-text">
+                                Precio: $${item.producto.precio} <br>
+                                Cantidad: ${item.cantidad} <br>
+                                Total: $${total}
+                            </p>
+                            <button class="btn btn-danger" onclick="eliminarDelCarrito('${item.producto.id}', '${data.session_key}')">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+                carritoContenedor.appendChild(card);
+            });
+        }
+
+        async function eliminarDelCarrito(productoId, sessionKey) {
+            const url = `/api/carrito/eliminar/${productoId}/${sessionKey}/`;
+            console.log(productoId)
+            console.log(sessionKey)
+            const response = await fetch(url, {
+                method: "DELETE"
+            });
+
+            if (response.ok) {
+                cargarCarrito();
+            } else {
+                
+                console.log(response)
+                alert("Error al eliminar el producto.");
+            }
+        }
+
+        // Inicializar
+        cargarCarrito();
+    </script>
+
+</body>
+</html>
