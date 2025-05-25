@@ -1,8 +1,10 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from .models import Carrito, ItemCarrito, Producto
 from .serializers import CarritoSerializer, ProductoSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from payment.views import crearTransaccion
 
 # Create your views here.
 @api_view(['GET'])
@@ -62,5 +64,14 @@ def eliminar_carrito(request, producto_id, session_key):
     item.delete()
     return Response({'message': 'Producto eliminado del carrito'})
 
+@api_view(['POST'])
+def pagar_carrito(request):
+    response = crearTransaccion(request._request) 
 
-
+    
+    if isinstance(response, HttpResponseRedirect):
+        return response
+    else:
+        return Response(response, status=400)
+   
+    

@@ -17,13 +17,21 @@
         </div>
     </nav>
 
+
     <!-- Contenido -->
     <div class="container mt-5">
         <h2>🛒 Tu carrito</h2>
         <div id="carrito-contenido" class="row mt-4">
             <p>Cargando productos...</p>
         </div>
+        <form method="POST" action="/api/carrito/pagar/">
+            {% csrf_token %}
+            <button type="submit" name="pagar" class="btn btn-primary">Pagar</button>
+        </form>
+        
     </div>
+
+    
 
     <!-- Scripts -->
     <script>

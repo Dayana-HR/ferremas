@@ -8,3 +8,6 @@ def vista_productos(request):
 
 def vista_carrito_html(request):
     return render(request, 'carrito.html')
+
+def pago_confirmado(request):
+    return render(request, 'confirmado.html')

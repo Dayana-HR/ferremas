@@ -24,6 +24,13 @@ class Producto(models.Model):
 class Carrito(models.Model):
     session_key = models.CharField(max_length=50)
     fec_creacion = models.DateField(auto_now_add=True)
+    token_ws = models.CharField(max_length=255, null=True, blank=True)
+
+    def total(self):
+        return sum(
+            item.producto.precio * item.cantidad
+            for item in self.items.all()
+        )
 
 class ItemCarrito(models.Model):
     carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, related_name='items')
