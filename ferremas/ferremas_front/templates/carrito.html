@@ -2,95 +2,796 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Carrito - Ferremas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - FERREMAS</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { padding-top: 70px; }
+        :root {
+            --primary-color: #ff4444;
+            --secondary-color: #333333;
+            --accent-color: #ff6b35;
+            --text-dark: #2c2c2c;
+            --text-light: #666666;
+            --bg-light: #f8f9fa;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 0;
+            color: var(--text-dark);
+            background: var(--bg-light);
+        }
+
+        /* Header y Navbar */
+        .top-header {
+            background: var(--secondary-color);
+            color: white;
+            padding: 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .main-navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color) !important;
+            text-decoration: none;
+        }
+
+        .navbar-brand:hover {
+            color: var(--accent-color) !important;
+        }
+
+        .back-btn {
+            background: transparent;
+            color: var(--text-dark);
+            border: 2px solid var(--text-light);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--text-dark);
+            color: white;
+            border-color: var(--text-dark);
+        }
+
+        /* Main Content */
+        .cart-container {
+            background: white;
+            padding: 40px 0;
+            min-height: 70vh;
+        }
+
+        .page-title {
+            text-align: center;
+            color: var(--text-dark);
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        /* Cart Items */
+        .cart-item {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s;
+        }
+
+        .cart-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .cart-item .card-body {
+            padding: 25px;
+        }
+
+        .product-image-placeholder {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin-right: 20px;
+        }
+
+        .product-info h5 {
+            color: var(--text-dark);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .product-brand {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .product-details {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .price-section {
+            text-align: right;
+        }
+
+        .unit-price {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .total-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .quantity-btn {
+            background: var(--bg-light);
+            border: 2px solid #e0e0e0;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .quantity-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .quantity-display {
+            font-weight: bold;
+            font-size: 1.1rem;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Cart Summary */
+        .cart-summary {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+            padding: 30px;
+            margin-top: 30px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-top: 10px;
+        }
+
+        .checkout-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 68, 68, 0.3);
+        }
+
+        .checkout-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Empty Cart */
+        
+         .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-cart i {
+            font-size: 5rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart h3 {
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        .continue-shopping-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 10px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .continue-shopping-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cart-item .card-body {
+                padding: 20px;
+            }
+
+            .product-image-placeholder {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+                margin-right: 15px;
+            }
+
+            .quantity-controls {
+                justify-content: center;
+                margin: 15px 0;
+            }
+
+            .price-section {
+                text-align: center;
+                margin-top: 15px;
+            }
+
+            .page-title h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cart-item {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .cart-summary {
+            animation: fadeInUp 0.7s ease-out;
+        }
+
+    .footer {
+            background: var(--secondary-color);
+            color: white;
+            padding: 50px 0 20px;
+        }
+
+        .footer h5 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .footer a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: var(--primary-color);
+        }
+
     </style>
 </head>
 <body>
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-dark fixed-top">
+    <!-- Top Header -->
+    <div class="top-header">
         <div class="container">
-            <a class="navbar-brand" href="#">Ferremas</a>
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <i class="fas fa-phone me-2"></i> +56 9 1234 5678
+                    <span class="ms-3">
+                        <i class="fas fa-envelope me-2"></i> contacto@ferremas.cl
+                    </span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <i class="fas fa-truck me-2"></i> Envío gratis en compras sobre $50.000
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navbar -->
+    <nav class="main-navbar">
+        <div class="container">
+            <div class="row align-items-center w-100">
+                <div class="col-md-6">
+                    <a class="navbar-brand" href="/index/">
+                        <i class="fas fa-tools me-2"></i>FERREMAS
+                    </a>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="/index/" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Seguir comprando
+                    </a>
+                </div>
+            </div>
         </div>
     </nav>
 
+    <!-- Main Content -->
+    <div class="cart-container">
+        <div class="container">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1><i class="fas fa-shopping-cart me-3"></i>Tu Carrito</h1>
+                <p class="text-muted">Revisa tus productos antes de finalizar la compra</p>
+            </div>
 
-    <!-- Contenido -->
-    <div class="container mt-5">
-        <h2>🛒 Tu carrito</h2>
-        <div id="carrito-contenido" class="row mt-4">
-            <p>Cargando productos...</p>
+            <!-- Cart Content -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div id="carrito-contenido">
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="mt-3 text-muted">Cargando productos del carrito...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div id="cart-summary" class="cart-summary" style="display: none;">
+                        <h3 class="summary-title">
+                            <i class="fas fa-receipt me-2"></i>Resumen de Compra
+                        </h3>
+                        <div id="summary-content">
+                            <!-- El contenido se genera dinámicamente -->
+                        </div>
+                        <form method="POST" action="/api/carrito/pagar/">
+                            {% csrf_token %}
+                            <button type="submit" id="checkout-btn" class="checkout-btn" disabled>
+                                <i class="fas fa-credit-card"></i>
+                                Proceder al Pago
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <form method="POST" action="/api/carrito/pagar/">
-            {% csrf_token %}
-            <button type="submit" name="pagar" class="btn btn-primary">Pagar</button>
-        </form>
-        
     </div>
 
-    
+  <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-tools me-2"></i>FERREMAS</h5>
+                    <p>Tu ferretería de confianza. Las mejores herramientas y equipos para todos tus proyectos.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contacto</h5>
+                    <p>
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        Av. Esquina Blanca 123, Miapú<br>
+                        <i class="fas fa-phone me-2"></i>
+                        +56 9 1234 5678<br>
+                        <i class="fas fa-envelope me-2"></i>
+                        contacto@ferremas.cl
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Síguenos</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#"><i class="fab fa-facebook fa-2x"></i></a>
+                        <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp fa-2x"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p>&copy; 2024 FERREMAS. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const carritoContenedor = document.getElementById("carrito-contenido");
+        const cartSummary = document.getElementById("cart-summary");
+        const summaryContent = document.getElementById("summary-content");
+        const checkoutBtn = document.getElementById("checkout-btn");
+        
+        let cartData = null;
 
         async function cargarCarrito() {
-            const response = await fetch("/api/carrito/ver/");
-            const data = await response.json();
+            try {
+                const response = await fetch("/api/carrito/ver/");
+                const data = await response.json();
+                cartData = data;
 
-            carritoContenedor.innerHTML = ""; // Limpiar
+                carritoContenedor.innerHTML = "";
 
-            if (!data.items || data.items.length === 0) {
-                carritoContenedor.innerHTML = "<p class='text-muted'>Tu carrito está vacío.</p>";
+                if (!data.items || data.items.length === 0) {
+                    mostrarCarritoVacio();
+                    return;
+                }
+
+                data.items.forEach((item, index) => {
+                    setTimeout(() => {
+                        agregarItemCarrito(item, data.session_key);
+                    }, index * 100); // Stagger animation
+                });
+
+                setTimeout(() => {
+                    actualizarResumen();
+                    cartSummary.style.display = 'block';
+                }, data.items.length * 100);
+
+            } catch (error) {
+                console.error('Error al cargar carrito:', error);
+                mostrarError();
+            }
+        }
+
+        function agregarItemCarrito(item, sessionKey) {
+            const total = item.producto.precio * item.cantidad;
+            const cartItem = document.createElement("div");
+            cartItem.className = "cart-item";
+            cartItem.innerHTML = `
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <div class="product-image-placeholder">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div class="product-info">
+                                    <h5>${item.producto.nombre}</h5>
+                                    <div class="product-brand">${item.producto.marca}</div>
+                                    <div class="product-details">
+                                        <strong>Código:</strong> ${item.producto.id}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="cambiarCantidad('${item.producto.id}', ${item.cantidad - 1}, '${sessionKey}')">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <span class="quantity-display">${item.cantidad}</span>
+                                <button class="quantity-btn" onclick="cambiarCantidad('${item.producto.id}', ${item.cantidad + 1}, '${sessionKey}')">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="price-section">
+                                <div class="unit-price">$${item.producto.precio.toLocaleString()} c/u</div>
+                                <div class="total-price">$${total.toLocaleString()}</div>
+                                <button class="remove-btn" onclick="eliminarDelCarrito('${item.producto.id}', '${sessionKey}')">
+                                    <i class="fas fa-trash"></i>
+                                    Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            carritoContenedor.appendChild(cartItem);
+        }
+
+        function mostrarCarritoVacio() {
+            carritoContenedor.innerHTML = `
+                <div class="empty-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Tu carrito está vacío</h3>
+                    <p>¡Agrega algunos productos para comenzar!</p>
+                    <a href="/index/" class="continue-shopping-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Ir a comprar
+                    </a>
+                </div>
+
+            `;
+            cartSummary.style.display = 'none';
+        }
+
+        function mostrarError() {
+            carritoContenedor.innerHTML = `
+                <div class="empty-cart">
+                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                    <h3>Error al cargar el carrito</h3>
+                    <p>Por favor, intenta recargar la página.</p>
+                    <button onclick="cargarCarrito()" class="continue-shopping-btn">
+                        <i class="fas fa-redo"></i>
+                        Reintentar
+                    </button>
+                </div>
+            `;
+        }
+
+        function actualizarResumen() {
+            if (!cartData || !cartData.items) return;
+
+            let subtotal = 0;
+            let totalItems = 0;
+
+            cartData.items.forEach(item => {
+                subtotal += item.producto.precio * item.cantidad;
+                totalItems += item.cantidad;
+            });
+
+            const envio = subtotal >= 50000 ? 0 : 5000;
+            const total = subtotal + envio;
+
+            summaryContent.innerHTML = `
+                <div class="summary-row">
+                    <span>Productos (${totalItems})</span>
+                    <span>$${subtotal.toLocaleString()}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Envío ${subtotal >= 50000 ? '<small class="text-success">(¡Gratis!)</small>' : ''}</span>
+                    <span>${envio === 0 ? 'Gratis' : '$' + envio.toLocaleString()}</span>
+                </div>
+                <div class="summary-row">
+                    <span><strong>Total</strong></span>
+                    <span><strong>$${total.toLocaleString()}</strong></span>
+                </div>
+            `;
+
+            checkoutBtn.disabled = false;
+        }
+
+        async function cambiarCantidad(productoId, nuevaCantidad, sessionKey) {
+            if (nuevaCantidad <= 0) {
+                eliminarDelCarrito(productoId, sessionKey);
                 return;
             }
 
-            data.items.forEach(item => {
-                console.log(item);
-                const total = item.producto.precio * item.cantidad;
-                const card = document.createElement("div");
-                card.className = "col-md-6 mb-4";
-                card.innerHTML = `
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">${item.producto.nombre}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">${item.producto.marca}</h6>
-                            <p class="card-text">
-                                Precio: $${item.producto.precio} <br>
-                                Cantidad: ${item.cantidad} <br>
-                                Total: $${total}
-                            </p>
-                            <button class="btn btn-danger" onclick="eliminarDelCarrito('${item.producto.id}', '${data.session_key}')">Eliminar</button>
-                        </div>
-                    </div>
-                `;
-                carritoContenedor.appendChild(card);
-            });
-        }
+            try {
+                const response = await fetch("/api/carrito/agregar/", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken")
+                    },
+                    body: JSON.stringify({
+                        id_producto: productoId,
+                        cantidad: nuevaCantidad,
+                        session_key: sessionKey
+                    })
+                });
 
-        async function eliminarDelCarrito(productoId, sessionKey) {
-            const url = `/api/carrito/eliminar/${productoId}/${sessionKey}/`;
-            console.log(productoId)
-            console.log(sessionKey)
-            const response = await fetch(url, {
-                method: "DELETE"
-            });
-
-            if (response.ok) {
-                cargarCarrito();
-            } else {
-                
-                console.log(response)
-                alert("Error al eliminar el producto.");
+                if (response.ok) {
+                    cargarCarrito();
+                    showNotification('Cantidad actualizada', 'success');
+                } else {
+                    showNotification('Error, no hay stock suficiente', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error de conexión', 'error');
             }
         }
 
-        // Inicializar
-        cargarCarrito();
-    </script>
+        async function eliminarDelCarrito(productoId, sessionKey) {
+            // Mostrar confirmación
+            if (!confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
+                return;
+            }
 
+            const url = `/api/carrito/eliminar/${productoId}/${sessionKey}/`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: "DELETE"
+                });
+
+                if (response.ok) {
+                    cargarCarrito();
+                    showNotification('Producto eliminado del carrito', 'success');
+                } else {
+                    console.error('Error response:', response);
+                    showNotification('Error al eliminar el producto', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error de conexión', 'error');
+            }
+        }
+
+        // Función para obtener CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + "=")) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Función para mostrar notificaciones
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
+            notification.style.cssText = `
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 300px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                border: none;
+                border-radius: 10px;
+            `;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        // Inicializar cuando la página carga
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarCarrito();
+            
+            // Manejar el formulario de checkout
+            document.querySelector('form').addEventListener('submit', function(e) {
+                checkoutBtn.innerHTML = '<div class="spinner"></div> Procesando...';
+                checkoutBtn.disabled = true;
+            });
+        });
+    </script>
 </body>
 </html>

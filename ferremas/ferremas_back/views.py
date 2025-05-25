@@ -33,7 +33,7 @@ def ver_carrito(request):
     serializer = CarritoSerializer(carrito)
     return Response(serializer.data)
 
-@api_view(['POST'])
+@api_view(['POST', 'PUT'])
 def agregar_producto_carrito(request):
     session_key = crear_session(request)
     id_producto = request.data.get('id_producto')
@@ -42,12 +42,33 @@ def agregar_producto_carrito(request):
     carrito, _ = Carrito.objects.get_or_create(session_key=session_key)
 
     item, fec_creacion = ItemCarrito.objects.get_or_create(carrito= carrito, producto=producto)
-    if not fec_creacion:
-        item.cantidad += cantidad
+    if request.method == 'PUT':
+        cantidad_final = cantidad
     else:
+        cantidad_final = (item.cantidad if not fec_creacion else 0) + cantidad
+        # if not fec_creacion:
+        #     item.cantidad += cantidad
+        # else:
+        #     item.cantidad = cantidad
+    if cantidad_final > producto.stock:
+        return Response({
+            'error': f'Stock insuficiente. Disponible: {producto.stock}, Solicitado: {cantidad_final}'
+        }, status=400)
+    if request.method == 'PUT':
         item.cantidad = cantidad
+    else:
+        if not fec_creacion:
+            item.cantidad += cantidad
+        else:
+            item.cantidad = cantidad
     item.save()
-    return Response({'message': 'Producto agregado al carrito'})
+
+    action = 'actualizado' if request.method == 'PUT' else 'agregado'
+    return Response({
+        'message': f'Producto {action} en el carrito',
+        'cantidad_en_carrito': item.cantidad,
+        'stock_disponible': producto.stock
+    })
 
 @api_view(['GET'])
 def ver_carrito_por_session(request, session_key):
