@@ -16,6 +16,7 @@ class ProductoSerializer(serializers.ModelSerializer):
         model = Producto
         fields = ['id', 'nombre', 'marca', 'stock', 'precio', 'cod_ext', 'fec_modif', 'categoria']
 
+
 class ItemCarritoSerializer(serializers.ModelSerializer):
     producto = ProductoSerializer(read_only=True)
 

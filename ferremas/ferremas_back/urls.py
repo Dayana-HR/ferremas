@@ -4,7 +4,6 @@ from rest_framework.routers import DefaultRouter
 from .views import CategoriaViewSet, ProductoViewSet
 
 
-
 urlpatterns = [
     path('api/stock/<int:id>', views.getStock, name='get-stock'),
     path('api/carrito/ver/', views.ver_carrito, name='vercarrito'),

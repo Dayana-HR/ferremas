@@ -7,7 +7,6 @@ from rest_framework.decorators import api_view
 from payment.views import crearTransaccion
 from rest_framework import viewsets
 
-
 # Create your views here.
 @api_view(['GET'])
 def getStock(request, id):
@@ -43,15 +42,11 @@ def agregar_producto_carrito(request):
     producto = get_object_or_404(Producto, id=id_producto)
     carrito, _ = Carrito.objects.get_or_create(session_key=session_key)
 
-    item, fec_creacion = ItemCarrito.objects.get_or_create(carrito= carrito, producto=producto)
+    item, fec_creacion = ItemCarrito.objects.get_or_create(carrito=carrito, producto=producto)
     if request.method == 'PUT':
         cantidad_final = cantidad
     else:
         cantidad_final = (item.cantidad if not fec_creacion else 0) + cantidad
-        # if not fec_creacion:
-        #     item.cantidad += cantidad
-        # else:
-        #     item.cantidad = cantidad
     if cantidad_final > producto.stock:
         return Response({
             'error': f'Stock insuficiente. Disponible: {producto.stock}, Solicitado: {cantidad_final}'
@@ -81,7 +76,6 @@ def ver_carrito_por_session(request, session_key):
 @api_view(['DELETE'])
 def eliminar_carrito(request, producto_id, session_key):
     print("ENTRÓ A ELIMINAR CARRITO")
-    # session_key = crear_session(request)
     carrito = get_object_or_404(Carrito, session_key=session_key)
     item = get_object_or_404(ItemCarrito, carrito=carrito, producto_id=producto_id)
     item.delete()
@@ -90,21 +84,16 @@ def eliminar_carrito(request, producto_id, session_key):
 @api_view(['POST'])
 def pagar_carrito(request):
     response = crearTransaccion(request._request) 
-
-    
     if isinstance(response, HttpResponseRedirect):
         return response
     else:
         return Response(response, status=400)
-   
-    
 
 # ViewSets para crear/ver productos y categorías desde Postman
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
 
-    
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
