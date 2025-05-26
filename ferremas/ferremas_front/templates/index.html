@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FERREMAS - Ferretería y Herramientas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff4444;
+            --secondary-color: #333333;
+            --accent-color: #ff6b35;
+            --text-dark: #2c2c2c;
+            --text-light: #666666;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 0;
+            color: var(--text-dark);
+        }
+
+        /* Header y Navbar */
+        .top-header {
+            background: var(--secondary-color);
+            color: white;
+            padding: 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .main-navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color) !important;
+            text-decoration: none;
+        }
+
+        .navbar-brand:hover {
+            color: var(--accent-color) !important;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 30px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            padding: 12px 50px 12px 20px;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(255, 68, 68, 0.25);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-color);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .search-btn:hover {
+            background: var(--accent-color);
+        }
+
+        .cart-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .cart-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Menú de categorías */
+        .categories-nav {
+            background: var(--bg-light);
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .category-link {
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin: 0 5px;
+            display: inline-block;
+        }
+
+        .category-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #ff4444 0%, #ff6b35 100%);
+            color: white;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .hero-btn {
+            background: white;
+            color: var(--primary-color);
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            color: var(--primary-color);
+        }
+
+        /* Sección de productos */
+        .products-section {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            margin-bottom: 30px;
+            overflow: hidden;
+            border: none;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .product-card .card-body {
+            padding: 25px;
+        }
+
+        .product-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .product-brand {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .product-info {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .add-to-cart-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-to-cart-btn:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .stock-info {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #e8f5e8;
+            color: #2d7d2d;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .stock-low {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .stock-out {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--secondary-color);
+            color: white;
+            padding: 50px 0 20px;
+            margin-top: 60px;
+        }
+
+        .footer h5 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .footer a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .search-container {
+                margin: 20px 0;
+                max-width: 100%;
+            }
+
+            .categories-nav {
+                text-align: center;
+            }
+
+            .category-link {
+                margin: 5px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <i class="fas fa-phone me-2"></i> +56 9 1234 5678
+                    <span class="ms-3">
+                        <i class="fas fa-envelope me-2"></i> contacto@ferremas.cl
+                    </span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <i class="fas fa-truck me-2"></i> Envío gratis en compras sobre $50.000
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navbar -->
+    <nav class="main-navbar">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <a class="navbar-brand" href="/index/">
+                        <i class="fas fa-tools me-2"></i>FERREMAS
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <div class="search-container">
+                        <div class="search-box">
+                            <input type="text" class="form-control" placeholder="¿Qué estás buscando?">
+                            <button class="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 text-end">
+                    <a href="/carrito/" class="cart-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        Carrito
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Categories Navigation -->
+    <div class="categories-nav">
+        <div class="container text-center">
+            <a href="#" class="category-link">
+                <i class="fas fa-hammer me-2"></i>Herramientas de Construcción
+            </a>
+            <a href="#" class="category-link">
+                <i class="fas fa-cogs me-2"></i>Equipos de Industria y Taller
+            </a>
+            <a href="#" class="category-link">
+                <i class="fas fa-seedling me-2"></i>Aseo y Jardín
+            </a>
+            <a href="#" class="category-link">
+                <i class="fas fa-wrench me-2"></i>Insumos y Accesorios
+            </a>
+            <a href="#" class="category-link">
+                <i class="fas fa-paint-brush me-2"></i>Pintura
+            </a>
+            <a href="#" class="category-link">
+                <i class="fas fa-tag me-2"></i>Outlet
+            </a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1 class="hero-title">FERREMAS</h1>
+                        <p class="hero-subtitle">
+                            Las mejores herramientas y equipos para tus proyectos.
+                            Calidad garantizada y precios competitivos.
+                        </p>
+                        <a href="#productos" class="hero-btn">
+                            VER PRODUCTOS
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <i class="fas fa-tools" style="font-size: 15rem; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="productos" class="products-section">
+        <div class="container">
+            <h2 class="section-title">PRODUCTOS DESTACADOS</h2>
+            
+            <div class="row">
+                {% for producto in productos %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="card product-card">
+                        <div class="card-body">
+                            <h5 class="product-title">{{ producto.nombre }}</h5>
+                            <h6 class="product-brand">{{ producto.marca }}</h6>
+                            <div class="product-info">
+                                <strong>Código:</strong> {{ producto.cod_ext }}<br>
+                                {% if producto.stock > 10 %}
+                                    <span class="stock-info">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        En stock ({{ producto.stock }})
+                                    </span>
+                                {% elif producto.stock > 0 %}
+                                    <span class="stock-info stock-low">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                        Pocas unidades ({{ producto.stock }})
+                                    </span>
+                                {% else %}
+                                    <span class="stock-info stock-out">
+                                        <i class="fas fa-times-circle me-1"></i>
+                                        Sin stock
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <div class="product-price">
+                                ${{ producto.precio|floatformat:0 }}
+                            </div>
+                            {% if producto.stock > 0 %}
+                                <button class="btn add-to-cart-btn agregar-carrito" data-id="{{ producto.id }}">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Agregar al carrito
+                                </button>
+                            {% else %}
+                                <button class="btn add-to-cart-btn" disabled style="background: #ccc;">
+                                    <i class="fas fa-ban"></i>
+                                    Sin stock
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="text-center py-5">
+                        <i class="fas fa-box-open" style="font-size: 4rem; color: #ccc; margin-bottom: 20px;"></i>
+                        <h3>No hay productos disponibles</h3>
+                        <p class="text-muted">Pronto tendremos nuevos productos para ti.</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-tools me-2"></i>FERREMAS</h5>
+                    <p>Tu ferretería de confianza. Las mejores herramientas y equipos para todos tus proyectos.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contacto</h5>
+                    <p>
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        Av. Esquina Blanca 123, Miapú<br>
+                        <i class="fas fa-phone me-2"></i>
+                        +56 9 1234 5678<br>
+                        <i class="fas fa-envelope me-2"></i>
+                        contacto@ferremas.cl
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Síguenos</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#"><i class="fab fa-facebook fa-2x"></i></a>
+                        <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp fa-2x"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p>&copy; 2024 FERREMAS. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const botones = document.querySelectorAll(".agregar-carrito");
+
+            botones.forEach(boton => {
+                boton.addEventListener("click", async function() {
+                    const idProducto = this.getAttribute("data-id");
+                    const originalText = this.innerHTML;
+                    
+                    // Mostrar estado de carga
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Agregando...';
+                    this.classList.add('loading');
+
+                    try {
+                        const response = await fetch("/api/carrito/agregar/", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": getCookie("csrftoken")
+                            },
+                            body: JSON.stringify({
+                                id_producto: idProducto,
+                                cantidad: 1
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            // Éxito
+                            this.innerHTML = '<i class="fas fa-check"></i> ¡Agregado!';
+                            this.style.background = '#28a745';
+                            
+                            // Mostrar notificación elegante
+                            showNotification('Producto agregado al carrito', 'success');
+                            
+                            // Restaurar botón después de 2 segundos
+                            setTimeout(() => {
+                                this.innerHTML = originalText;
+                                this.style.background = '';
+                                this.classList.remove('loading');
+                            }, 2000);
+                        } else {
+                            throw new Error(data.message || "No se pudo agregar el producto");
+                        }
+                    } catch (err) {
+                        // Error
+                        this.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+                        this.style.background = '#dc3545';
+                        
+                        showNotification('Error al agregar producto: ' + err.message, 'error');
+                        
+                        // Restaurar botón después de 3 segundos
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.style.background = '';
+                            this.classList.remove('loading');
+                        }, 3000);
+                    }
+                });
+            });
+
+            // Función para obtener CSRF token
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== "") {
+                    const cookies = document.cookie.split(";");
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.startsWith(name + "=")) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            // Función para mostrar notificaciones elegantes
+            function showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
+                notification.style.cssText = `
+                    top: 20px;
+                    right: 20px;
+                    z-index: 9999;
+                    min-width: 300px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                    border: none;
+                    border-radius: 10px;
+                `;
+                notification.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                    ${message}
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Remover después de 4 segundos
+                setTimeout(() => {
+                    notification.remove();
+                }, 4000);
+            }
+
+            // Scroll suave para enlaces internos
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
