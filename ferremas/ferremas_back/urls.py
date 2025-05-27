@@ -2,9 +2,11 @@ from django.urls import path
 from . import views
 from rest_framework.routers import DefaultRouter
 from .views import CategoriaViewSet, ProductoViewSet
+from ferremas_front.views import vista_productos
 
 
 urlpatterns = [
+    path('', vista_productos, name='index'),
     path('api/stock/<int:id>', views.getStock, name='get-stock'),
     path('api/carrito/ver/', views.ver_carrito, name='vercarrito'),
     path('api/carrito/agregar/', views.agregar_producto_carrito),
