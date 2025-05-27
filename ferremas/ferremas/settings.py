@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "ferremas_back",
     "ferremas_front",
     "payment",
+    "rest_framework_swagger",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
