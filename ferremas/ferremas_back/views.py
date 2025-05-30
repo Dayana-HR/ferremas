@@ -67,6 +67,7 @@ def agregar_producto_carrito(request):
         'stock_disponible': producto.stock
     })
 
+
 @api_view(['GET'])
 def ver_carrito_por_session(request, session_key):
     carrito = get_object_or_404(Carrito, session_key=session_key)

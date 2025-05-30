@@ -7,7 +7,7 @@ from ferremas_front.views import vista_productos
 
 urlpatterns = [
     path('', vista_productos, name='index'),
-    path('api/stock/<int:id>', views.getStock, name='get-stock'),
+    path('api/stock/<str:id>', views.getStock, name='get-stock'),
     path('api/carrito/ver/', views.ver_carrito, name='vercarrito'),
     path('api/carrito/agregar/', views.agregar_producto_carrito),
     path('api/carrito/ver/<str:session_key>/', views.ver_carrito_por_session),

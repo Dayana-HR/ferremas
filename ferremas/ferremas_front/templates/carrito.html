@@ -548,7 +548,6 @@
                 const response = await fetch("/api/carrito/ver/");
                 const data = await response.json();
                 cartData = data;
-
                 carritoContenedor.innerHTML = "";
 
                 if (!data.items || data.items.length === 0) {
@@ -561,7 +560,7 @@
                         agregarItemCarrito(item, data.session_key);
                     }, index * 100); // Stagger animation
                 });
-
+                console.log(data.session_key)
                 setTimeout(() => {
                     actualizarResumen();
                     cartSummary.style.display = 'block';
