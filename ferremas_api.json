@@ -1,0 +1,1104 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Ferremas API",
+    "version": "1.0.0",
+    "description": "API REST para la gestión de productos, categorías y carrito de compras de Ferremas - Tu ferretería de confianza",
+    "contact": {
+      "name": "Equipo de Desarrollo Ferremas",
+      "email": "api-support@ferremas.com"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000/",
+      "description": "Servidor de producción"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Carrito",
+      "description": "Operaciones relacionadas con el carrito de compras"
+    },
+    {
+      "name": "Productos",
+      "description": "Gestión del catálogo de productos"
+    },
+    {
+      "name": "Categorías",
+      "description": "Gestión de categorías de productos"
+    },
+    {
+      "name": "Stock",
+      "description": "Consulta de inventario y disponibilidad"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Categoria": {
+        "type": "object",
+        "required": [
+          "nombre"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador único de la categoría",
+            "example": "cat_001"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre de la categoría",
+            "example": "Herramientas Eléctricas"
+          }
+        }
+      },
+      "Producto": {
+        "type": "object",
+        "required": [
+          "nombre",
+          "categoria",
+          "marca",
+          "precio"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador único del producto",
+            "example": "P017"
+          },
+          "categoria": {
+            "type": "string",
+            "description": "ID de la categoría a la que pertenece",
+            "example": "cat_001"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre descriptivo del producto",
+            "example": "Taladro Inalámbrico 18V"
+          },
+          "marca": {
+            "type": "string",
+            "description": "Marca del producto",
+            "example": "DeWalt"
+          },
+          "stock": {
+            "type": "integer",
+            "description": "Cantidad disponible en inventario",
+            "minimum": 0,
+            "example": 25
+          },
+          "precio": {
+            "type": "integer",
+            "description": "Precio del producto en pesos chilenos",
+            "minimum": 0,
+            "example": 89990
+          },
+          "cod_ext": {
+            "type": "string",
+            "description": "Código externo o SKU del producto",
+            "example": "DW-001-18V"
+          },
+          "fec_modif": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha de última modificación",
+            "example": "2025-05-30"
+          }
+        }
+      },
+      "Stock": {
+        "type": "object",
+        "properties": {
+          "id_producto": {
+            "type": "string",
+            "description": "ID del producto",
+            "example": "P017"
+          },
+          "stock_disponible": {
+            "type": "integer",
+            "description": "Cantidad disponible",
+            "example": 25
+          },
+          "stock_reservado": {
+            "type": "integer",
+            "description": "Cantidad reservada en carritos",
+            "example": 3
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Descripción del error"
+          },
+          "codigo": {
+            "type": "string",
+            "description": "Código de error interno"
+          }
+        }
+      }
+    },
+    "responses": {
+      "NotFound": {
+        "description": "Recurso no encontrado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": "El recurso solicitado no fue encontrado",
+              "codigo": "RESOURCE_NOT_FOUND"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Solicitud incorrecta",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": "Los datos enviados no son válidos",
+              "codigo": "INVALID_INPUT"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/carrito/agregar/": {
+      "post": {
+        "tags": [
+          "Carrito"
+        ],
+        "summary": "Agregar producto al carrito",
+        "description": "Agrega un producto al carrito de compras del usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id_producto",
+                  "cantidad",
+                  "session_key"
+                ],
+                "properties": {
+                  "id_producto": {
+                    "type": "string",
+                    "description": "ID del producto a agregar",
+                    "example": "P017"
+                  },
+                  "cantidad": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Cantidad del producto",
+                    "example": 2
+                  },
+                  "session_key": {
+                    "type": "string",
+                    "description": "Clave de sesión del usuario",
+                    "example": "8e1au3n0g1yb677f9ezzttuzbulhxuqv"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Producto agregado exitosamente al carrito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensaje": {
+                      "type": "string",
+                      "example": "Producto agregado al carrito exitosamente"
+                    },
+                    "cantidad_en_carrito": {
+                      "type": "integer",
+                      "example": 3
+                    },
+                    "stock_disponible": {
+                      "type": "integer",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Carrito"
+        ],
+        "summary": "Actualizar cantidad en carrito",
+        "description": "Actualiza la cantidad de un producto específico en el carrito",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id_producto",
+                  "cantidad",
+                  "session_key"
+                ],
+                "properties": {
+                  "id_producto": {
+                    "type": "string",
+                    "example": "P017"
+                  },
+                  "cantidad": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "example": 5
+                  },
+                  "session_key": {
+                    "type": "string",
+                    "example": "8e1au3n0g1yb677f9ezzttuzbulhxuqv"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cantidad actualizada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensaje": {
+                      "type": "string",
+                      "example": "Producto actualizado en el carrito"
+                    },
+                    "cantidad_en_carrito": {
+                      "type": "integer",
+                      "example": 3
+                    },
+                    "stock_disponible": {
+                      "type": "integer",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/api/carrito/eliminar/{id_producto}/{session_key}/": {
+      "delete": {
+        "tags": [
+          "Carrito"
+        ],
+        "summary": "Eliminar producto del carrito",
+        "description": "Elimina completamente un producto específico del carrito de compras",
+        "parameters": [
+          {
+            "name": "id_producto",
+            "in": "path",
+            "required": true,
+            "description": "ID del producto a eliminar",
+            "schema": {
+              "type": "string"
+            },
+            "example": "P017"
+          },
+          {
+            "name": "session_key",
+            "in": "path",
+            "required": true,
+            "description": "Clave de sesión del usuario",
+            "schema": {
+              "type": "string"
+            },
+            "example": "y2nxj5m6gcdv8gkeno5vf49pvanzd8z5"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Producto eliminado del carrito"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/carrito/pagar/": {
+      "post": {
+        "tags": [
+          "Carrito"
+        ],
+        "summary": "Procesar pago del carrito",
+        "description": "Procesa el pago de todos los productos en el carrito y genera la orden de compra",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "session_key",
+                  "metodo_pago"
+                ],
+                "properties": {
+                  "session_key": {
+                    "type": "string",
+                    "example": "8e1au3n0g1yb677f9ezzttuzbulhxuqv"
+                  },
+                  "metodo_pago": {
+                    "type": "string",
+                    "enum": [
+                      "tarjeta",
+                      "transferencia",
+                      "efectivo"
+                    ],
+                    "example": "tarjeta"
+                  },
+                  "datos_cliente": {
+                    "type": "object",
+                    "properties": {
+                      "nombre": {
+                        "type": "string",
+                        "example": "Juan Pérez"
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "juan.perez@email.com"
+                      },
+                      "telefono": {
+                        "type": "string",
+                        "example": "+56912345678"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pago procesado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "orden_id": {
+                      "type": "string",
+                      "example": "ORD-2025-001234"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "example": 179980
+                    },
+                    "estado": {
+                      "type": "string",
+                      "example": "procesando"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/api/carrito/ver/{session_key}/": {
+      "get": {
+        "tags": [
+          "Carrito"
+        ],
+        "summary": "Ver contenido del carrito",
+        "description": "Obtiene todos los productos y detalles del carrito para una sesión específica",
+        "parameters": [
+          {
+            "name": "session_key",
+            "in": "path",
+            "required": true,
+            "description": "Clave de sesión del usuario",
+            "schema": {
+              "type": "string"
+            },
+            "example": "y2nxj5m6gcdv8gkeno5vf49pvanzd8z5"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contenido del carrito obtenido exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "producto": {
+                            "$ref": "#/components/schemas/Producto"
+                          },
+                          "cantidad": {
+                            "type": "integer",
+                            "example": 2
+                          },
+                          "subtotal": {
+                            "type": "integer",
+                            "example": 179980
+                          }
+                        }
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "example": 179980
+                    },
+                    "total_items": {
+                      "type": "integer",
+                      "example": 2
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/carrito/ver/": {
+      "get": {
+        "tags": [
+          "Carrito"
+        ],
+        "summary": "Listar todos los carritos",
+        "description": "Obtiene una lista de todos los carritos activos (solo para administradores)",
+        "responses": {
+          "200": {
+            "description": "Lista de carritos obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "session_key": {
+                        "type": "string",
+                        "example": "8e1au3n0g1yb677f9ezzttuzbulhxuqv"
+                      },
+                      "total_items": {
+                        "type": "integer",
+                        "example": 3
+                      },
+                      "total_valor": {
+                        "type": "integer",
+                        "example": 269970
+                      },
+                      "fecha_creacion": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-30T10:30:00Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stock/{id}": {
+      "get": {
+        "tags": [
+          "Stock"
+        ],
+        "summary": "Consultar stock de producto",
+        "description": "Obtiene información detallada del inventario de un producto específico",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del producto",
+            "schema": {
+              "type": "string"
+            },
+            "example": "P017"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Información de stock obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stock"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/categorias/": {
+      "get": {
+        "tags": [
+          "Categorías"
+        ],
+        "summary": "Listar categorías",
+        "description": "Obtiene todas las categorías de productos disponibles",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de categorías obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Categoria"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categorías"
+        ],
+        "summary": "Crear nueva categoría",
+        "description": "Crea una nueva categoría de productos",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Categoria"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Categoría creada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Categoria"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/categorias/{id}/": {
+      "get": {
+        "tags": [
+          "Categorías"
+        ],
+        "summary": "Obtener categoría por ID",
+        "description": "Obtiene los detalles de una categoría específica",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único de la categoría",
+            "schema": {
+              "type": "string"
+            },
+            "example": "cat_001"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoría obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Categoria"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Categorías"
+        ],
+        "summary": "Actualizar categoría completa",
+        "description": "Actualiza todos los campos de una categoría existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único de la categoría",
+            "schema": {
+              "type": "string"
+            },
+            "example": "cat_001"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Categoria"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Categoría actualizada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Categoria"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Categorías"
+        ],
+        "summary": "Actualizar categoría parcial",
+        "description": "Actualiza campos específicos de una categoría existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único de la categoría",
+            "schema": {
+              "type": "string"
+            },
+            "example": "cat_001"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string",
+                    "example": "Herramientas Manuales"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Categoría actualizada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Categoria"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Categorías"
+        ],
+        "summary": "Eliminar categoría",
+        "description": "Elimina una categoría existente. No se puede eliminar si tiene productos asociados.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único de la categoría",
+            "schema": {
+              "type": "string"
+            },
+            "example": "cat_001"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Categoría eliminada exitosamente"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "No se puede eliminar la categoría porque tiene productos asociados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "No se puede eliminar la categoría porque tiene productos asociados",
+                  "codigo": "CATEGORY_HAS_PRODUCTS"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/productos/": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Listar productos",
+        "description": "Obtiene el catálogo completo de productos con filtros opcionales",
+        "parameters": [
+          {
+            "name": "categoria",
+            "in": "query",
+            "description": "Filtrar por ID de categoría",
+            "schema": {
+              "type": "string"
+            },
+            "example": "cat_001"
+          },
+          {
+            "name": "marca",
+            "in": "query",
+            "description": "Filtrar por marca",
+            "schema": {
+              "type": "string"
+            },
+            "example": "DeWalt"
+          },
+          {
+            "name": "precio_min",
+            "in": "query",
+            "description": "Precio mínimo",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 10000
+          },
+          {
+            "name": "precio_max",
+            "in": "query",
+            "description": "Precio máximo",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 100000
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de productos obtenida exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Producto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Crear nuevo producto",
+        "description": "Agrega un nuevo producto al catálogo",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Producto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Producto creado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/productos/{id}/": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Obtener producto por ID",
+        "description": "Obtiene los detalles completos de un producto específico",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único del producto",
+            "schema": {
+              "type": "string"
+            },
+            "example": "P017"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto obtenido exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Actualizar producto completo",
+        "description": "Actualiza todos los campos de un producto existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único del producto",
+            "schema": {
+              "type": "string"
+            },
+            "example": "P017"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Producto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Producto actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Actualizar producto parcial",
+        "description": "Actualiza campos específicos de un producto existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único del producto",
+            "schema": {
+              "type": "string"
+            },
+            "example": "P017"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "precio": {
+                    "type": "integer",
+                    "example": 95990
+                  },
+                  "stock": {
+                    "type": "integer",
+                    "example": 30
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Producto actualizado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Eliminar producto",
+        "description": "Elimina un producto del catálogo. No se puede eliminar si está en carritos activos.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID único del producto",
+            "schema": {
+              "type": "string"
+            },
+            "example": "P017"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Producto eliminado exitosamente"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "No se puede eliminar el producto porque está en carritos activos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "No se puede eliminar el producto porque está en carritos activos",
+                  "codigo": "PRODUCT_IN_ACTIVE_CARTS"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

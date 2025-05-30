@@ -11,3 +11,9 @@ source venv/bin/activate -- macos comando
 ```bash
 pip install -r requirements.txt
 ```
+
+## Documentación API
+
+Url: https://editor.swagger.io/
+
+- Importar archivo ferremas_api.json

@@ -1,3 +1,6 @@
 django
 djangorestframework
 requests
+django-rest-swagger
+drf_yasg
+django-cors-headers
